@@ -3,10 +3,16 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import * as Slider from '@radix-ui/react-slider';
-import { Upload, Image as ImageIcon, RefreshCcw } from 'lucide-react';
+import { Upload, Image as ImageIcon, RefreshCcw, Lock, Unlock } from 'lucide-react';
 interface ImageDimensions {
   width: number;
   height: number;
+}
+
+interface AspectRatio {
+  width: number;
+  height: number;
+  ratio: number;
 }
 
 export default function ImageResizer() {
@@ -15,6 +21,8 @@ export default function ImageResizer() {
   const [dimensions, setDimensions] = useState<ImageDimensions>({ width: 0, height: 0 });
   const [scale, setScale] = useState<number>(100);
   const [processing, setProcessing] = useState(false);
+  const [aspectRatio, setAspectRatio] = useState<AspectRatio | null>(null);
+  const [lockAspectRatio, setLockAspectRatio] = useState(true);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -30,9 +38,13 @@ export default function ImageResizer() {
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = () => {
-        setDimensions({
-          width: img.width,
-          height: img.height
+        const width = img.width;
+        const height = img.height;
+        setDimensions({ width, height });
+        setAspectRatio({
+          width,
+          height,
+          ratio: width / height
         });
       };
     }
@@ -57,8 +69,14 @@ export default function ImageResizer() {
       if (!ctx) throw new Error('Could not get canvas context');
 
       // Calculate new dimensions
-      const newWidth = Math.round(dimensions.width * (scale / 100));
-      const newHeight = Math.round(dimensions.height * (scale / 100));
+      let newWidth = Math.round(dimensions.width * (scale / 100));
+      let newHeight = Math.round(dimensions.height * (scale / 100));
+
+      // Maintain aspect ratio if locked
+      if (lockAspectRatio && aspectRatio) {
+        newWidth = Math.round(dimensions.width * (scale / 100));
+        newHeight = Math.round(newWidth / aspectRatio.ratio);
+      }
 
       // Set canvas size
       canvas.width = newWidth;
@@ -132,13 +150,41 @@ export default function ImageResizer() {
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">
-                Resize Scale: {scale}%
-              </label>
-              <span className="text-sm text-gray-500">
-                {Math.round(dimensions.width * (scale / 100))} x {Math.round(dimensions.height * (scale / 100))} px
-              </span>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-gray-700">
+                  Resize Scale: {scale}%
+                </label>
+                <button
+                  onClick={() => setLockAspectRatio(!lockAspectRatio)}
+                  className="flex items-center space-x-1 text-sm text-gray-500 hover:text-gray-700"
+                >
+                  {lockAspectRatio ? (
+                    <>
+                      <Lock className="w-4 h-4" />
+                      <span>Aspect Ratio Locked</span>
+                    </>
+                  ) : (
+                    <>
+                      <Unlock className="w-4 h-4" />
+                      <span>Aspect Ratio Unlocked</span>
+                    </>
+                  )}
+                </button>
+              </div>
+              <div className="flex items-center justify-end">
+                <span className="text-sm text-gray-500">
+                  {lockAspectRatio && aspectRatio ? (
+                    <>
+                      {Math.round(dimensions.width * (scale / 100))} x {Math.round((dimensions.width * (scale / 100)) / aspectRatio.ratio)} px
+                    </>
+                  ) : (
+                    <>
+                      {Math.round(dimensions.width * (scale / 100))} x {Math.round(dimensions.height * (scale / 100))} px
+                    </>
+                  )}
+                </span>
+              </div>
             </div>
             
             <Slider.Root
