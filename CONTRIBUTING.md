@@ -18,9 +18,11 @@
 
 ### 3. Commit Guidelines
 - Use clear, descriptive commit messages
+- Each commit should cover a single logical change
 - Format: `[type]: Brief description`
 - Types: `feature`, `fix`, `docs`, `style`, `refactor`, `test`
-- Example: `[feature]: Add image crop functionality`
+- Example: `"[feature]: Add image crop functionality"`
+- Important: Always use quotes in git commit commands to prevent errors
 
 ### 4. Pull Request Process
 1. Push your branch to GitHub
