@@ -154,6 +154,25 @@ This vision document is a living document and will be updated as our product evo
 ## Discussion Log
 > Use this section to track our ongoing discussions and decisions
 
+### [Date: 2025-06-15]
+**Topic:** Code Documentation - ImageResizer Component
+- PR Link: https://github.com/Tor71/image_resize_app/pull/3
+- Points discussed:
+  - Added strategic code comments to improve maintainability
+  - Documented key functional sections: dropzone, resize logic, and component structure
+  - Reviewed code spacing and organization
+- Technical details:
+  - Added comments for dropzone configuration and image upload
+  - Documented image resize and download functionality
+  - Added component rendering documentation
+  - Improved code spacing around Slider component
+- Decisions made:
+  - Approved documentation improvements
+  - Suggested enhancements to comment content for more clarity
+- Next steps:
+  - Consider expanding comments with more implementation details
+  - Apply similar documentation style to future components
+
 ### [Date: 2025-06-14]
 **Topic:** Feature Prioritization and Target Audience
 - Point discussed: Reviewed initial feature roadmap and target audience focus
