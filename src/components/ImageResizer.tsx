@@ -50,6 +50,7 @@ export default function ImageResizer() {
     }
   }, []);
 
+  // Dropzone setup for image upload and preview 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
@@ -58,6 +59,7 @@ export default function ImageResizer() {
     maxFiles: 1
   });
 
+  // Resize image and download
   const handleResize = async () => {
     if (!image || !dimensions.width || !dimensions.height) return;
 
@@ -118,6 +120,7 @@ export default function ImageResizer() {
     }
   };
 
+  // Render the component
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div
@@ -186,6 +189,7 @@ export default function ImageResizer() {
                 </span>
               </div>
             </div>
+            
             
             <Slider.Root
               className="relative flex items-center select-none touch-none w-full h-5"
